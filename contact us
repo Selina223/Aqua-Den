@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Management System</title>
+    <link rel="stylesheet" href="style 4.css">
+</head>
+<body>
+    <div class="banner">
+        <div class="navbar">
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="About.html">About</a></li>
+                <li><a href="leakdetectorpage.html">Water Leakage</a></li>
+                <li><a href="watermanagementsystem.html">Dashboard</a></li>
+                <li><a href="chatbot.html">Chatbot</a></li>
+            </ul>
+        </nav>    
+        </div>
+
+    </div>
+    <div class="container" id="container">
+        <div class="form-container sign-in-container">
+            <form action="#">
+                <h1>Get In Touch</h1>
+                <div class="social-container">
+                    <a href="https://www.facebook.com/" class="social"><i class="fab fa-facebook"></i></a>
+                    <a href="https://github.com/" class="social"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>Fill In</span>
+                <input type="text" placeholder="Name" />
+                <input type="email" placeholder="Email" />
+                <input type="tel" placeholder="Phone number" />
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+        <div class="form-container sign-up-container">
+            <form action="#">
+                <h1>Sign up for our newsletter</h1>
+                <div class="social-container">
+                    <a href="https://www.facebook.com/" class="social"><i class="fab fa-facebook"></i></a>
+                    <a href="https://github.com/" class="social"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>Sign up to receive monthly updates on the current water crisis</span>
+                <input type="text" placeholder="Name" />
+                <input type="email" placeholder="Email" />
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Stay Up To Date</h1>
+                    <p>Please sign up to keep updated</p>
+                    <button class="ghost" id="overlaySignUp">Sign Up</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello!</h1>
+                    <p>Please submit the form and<br> we will get right back to you</p>
+                    <button class="ghost" id="overlaySubmit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
