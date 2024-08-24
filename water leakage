@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Water Leak Detection GUI</title>
+  <link rel="stylesheet" href="style 2.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      /*background: url('pexels-eye4dtail-165985.jpg') no-repeat center center fixed;*/
+      background-size: cover;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      color: black;
+    }
+    nav {
+            text-align: center;
+            position: absolute;
+            top: 20px;
+            width: 100%;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        nav li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        nav li:last-child {
+            margin-right: 0;
+        }
+        nav a {
+            color: black;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        nav a:hover{
+            color: rgb(255, 255, 255);
+        }
+
+    .container {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 350px;
+      margin-top: 20px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .summary {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 80%;
+      max-width: 800px;
+      margin-top: 20px;
+    }
+
+    .alert-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffe5e5;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .alert-section p {
+      color: #a30000;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .temperature, .gallons, .date-time {
+      margin: 15px 0;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      margin: 5px 0;
+      width: 100%;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button:focus {
+      outline: none;
+      box-shadow: 0 0 5px #0056b3;
+    }
+
+    /* Green Circle */
+    .green-circle {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      background-color: #28a745; /* Green color */
+      border-radius: 50%;
+      margin-right: 10px; /* Space between circle and text */
+    }
+
+    /* Red Circle */
+    .red-circle {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      background-color: #ff0000; /* Red color */
+      border-radius: 50%;
+      margin-right: 10px; /* Space between circle and text */
+    }
+
+    .charts {
+      width: 80%;
+      max-width: 800px;
+      margin-top: 20px;
+      display: none; /* Initially hide charts */
+    }
+
+    canvas {
+      width: 100%;
+      height: 400px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="navbar">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href= "About.html">About</a></li>
+        <li><a href="watermanagementsystem.html">Dashboard</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+</div>
+
+  <!-- Main Container for the Leak Detection System -->
+  <div class="container">
+    <h1>Water Leak Detection System</h1>
+
+    <!-- Alert Section -->
+    <div class="alert-section">
+      <p>🚨 Leak Detected!</p>
+    </div>
+
+    <!-- Date and Time Display -->
+    <div class="date-time">
+      <p>Date & Time: <span id="date-time"></span></p>
+    </div>
+
+    <!-- Temperature Display -->
+    <div class="temperature">
+      <p>Temperature: <span id="temperature-value">Loading...</span></p>
+    </div>
+
+    <!-- Water Data Display -->
+    <div class="gallons">
+      <p><span class="green-circle"></span> Water Successfully Passed: 
+        <span id="water-passed">Loading...</span>
+      </p>
+      <p><span class="red-circle"></span> Water Lost Due to Leakage: 
+        <span id="water-lost">Loading...</span>
+      </p>
+    </div>
+
+    <!-- Buttons -->
+    <div class="buttons">
+      <button id="automatic-shutoff">Activate Automatic Shutoff</button>
+      <button id="report-repair">Report Repair</button>
+      <button id="view-stats">View Leak Stats</button>
+    </div>
+  </div>
+
+  <br><br><br>
+  
+  <!-- Line Graphs -->
+  <div class="charts">
+    <canvas id="waterDataChart"></canvas>
+    <canvas id="leakageChart"></canvas>
+  </div>
+
+  <script>
+    function updateDateTime() {
+      const now = new Date();
+      const dateString = now.toLocaleDateString();
+      const timeString = now.toLocaleTimeString();
+      document.getElementById('date-time').textContent = `${dateString} ${timeString}`;
+    }
+
+    function fetchTemperature() {
+      // Replace with actual temperature fetching logic
+      const temperatureElement = document.getElementById('temperature-value');
+      temperatureElement.textContent = '22°C'; // Replace this with actual temperature fetching logic
+    }
+
+    function fetchWaterData() {
+      // Replace with actual water data fetching logic
+      const waterPassedElement = document.getElementById('water-passed');
+      const waterLostElement = document.getElementById('water-lost');
+      waterPassedElement.textContent = '100 gallons'; // Replace with actual data
+      waterLostElement.textContent = '10 gallons'; // Replace with actual data
+    }
+
+    function activateAutomaticShutoff() {
+      // Logic to activate automatic shutoff valves
+      alert('Automatic shutoff activated!');
+    }
+
+    function reportRepair() {
+      // Logic to report a repair ticket
+      alert('Repair ticket generated and sent!');
+    }
+
+    function toggleGraphs() {
+      const chartsDiv = document.querySelector('.charts');
+      if (chartsDiv.style.display === 'none') {
+        chartsDiv.style.display = 'block';
+      } else {
+        chartsDiv.style.display = 'none';
+      }
+    }
+
+    document.getElementById('automatic-shutoff').addEventListener('click', activateAutomaticShutoff);
+    document.getElementById('report-repair').addEventListener('click', reportRepair);
+    document.getElementById('view-stats').addEventListener('click', toggleGraphs);
+
+    // Initialize
+    updateDateTime();
+    setInterval(updateDateTime, 1000); // Update date and time every second
+    fetchTemperature();
+    fetchWaterData();
+
+    // Line Graphs
+    const ctxWater = document.getElementById('waterDataChart').getContext('2d');
+    const waterDataChart = new Chart(ctxWater, {
+      type: 'line',
+      data: {
+        labels: ['0h', '1h', '2h', '3h', '4h', '5h'], // Example time labels
+        datasets: [{
+          label: 'Water Successfully Passed',
+          data: [100, 120, 150, 170, 160, 180], // Example data
+          borderColor: '#007bff',
+          backgroundColor: 'rgba(0, 123, 255, 0.2)',
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Time'
+            }
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Gallons'
+            }
+          }
+        }
+      }
+    });
+
+    const ctxLeakage = document.getElementById('leakageChart').getContext('2d');
+    const leakageChart = new Chart(ctxLeakage, {
+      type: 'line',
+      data: {
+        labels: ['0h', '1h', '2h', '3h', '4h', '5h'], // Example time labels
+        datasets: [{
+          label: 'Water Lost Due to Leakage',
+          data: [10, 15, 20, 18, 25, 30], // Example data
+          borderColor: '#ff0000',
+          backgroundColor: 'rgba(255, 0, 0, 0.2)',
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Time'
+            }
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Gallons'
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
