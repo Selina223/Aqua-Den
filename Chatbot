@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot with Search History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 20%;
+            max-width: 200px;
+            background-color: #fff;
+            color: black;
+            padding: 15px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: #444;
+            border-radius: 4px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #052659;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .chat-container {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-box {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            height: 400px;
+            overflow-y: auto;
+            background: #fafafa;
+            flex: 1;
+        }
+
+        .input-box {
+            margin-top: 20px;
+            display: flex;
+        }
+
+        .input-box input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .input-box button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color:#052659 ;
+            color: white;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .response {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Search History</h2>
+        <ul id="searchHistory"></ul>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>Chatbot</h1>
+        </header>
+        <div class="chat-container">
+            <div class="chat-box" id="chatBox">
+                <div class="response">Hello! How can I assist you today?</div>
+            </div>
+            <div class="input-box">
+                <input type="text" id="userInput" placeholder="Type your message here...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const responses = {
+            "hi": "Hello! How can I help you today?",
+            "sawubona":"Yebo kunjani! Ngingakusiza ngani namhlanje?",
+            "name": "I'm a chatbot designed to assist you. How can I help?",
+            "igama":"Ngiyi thoyisi mina ngakhelwe ukusiza wena. Ngingakusiza ngani?",
+            "how": "I'm just a program, but I'm here to help you!",
+            "water": "Water management involves the planning, developing, distributing, and managing of water resources.",
+            "save": "You can save water by fixing leaks, using water-efficient fixtures, taking shorter showers, and watering your garden during cooler parts of the day.",
+            "irrigation": "Smart irrigation involves using technology to optimize water use for landscapes and farms, often through sensors and weather data.",
+            "sustainable": "Sustainable water management focuses on balancing water use with conservation to meet present and future water needs.",
+            "quality": "Monitoring water quality ensures that the water supply is safe for consumption, helps identify pollutants, and protects ecosystems.",
+            "joke": "Why did the water bottle get a promotion? Because it was never on tap!",
+            "weather": "I'm not connected to a weather service, but it’s always a good idea to carry an umbrella, just in case!",
+            "ai": "Artificial Intelligence (AI) is a branch of computer science that focuses on creating machines capable of performing tasks that typically require human intelligence.",
+            "color": "I don't have eyes, but if I did, I'd say green—like a healthy planet!",
+            "saving":"To save water, fix leaks, use water-efficient appliances, and be mindful of daily usage.",
+            "more": "Sure! I can explain more about water-saving techniques, smart irrigation, or any other topic you're curious about.",
+            "help": "You can help by spreading awareness about the importance of water conservation and practicing sustainable water use.",
+            "track usage":"You can track your water usage through the dashboard, which provides real-time data on your consumption.",
+            "usage":"You can track your water usage through the dashboard, which provides real-time data on your consumption. The data is displayed in various formats such as graphs and charts, allowing you to monitor your usage trends over time.",
+            "average consumption rate":"Average consumption varies based on several factors, including location and usage habits. Generally, households consume around 300 liters per day, farms can use anywhere from 10,000 to 30,000 liters daily depending on crop type, and industries vary widely based on the type of industry.",
+            "how can i reduce my water consumption":"Reducing water consumption can be achieved by fixing leaks, using water-efficient appliances, practicing smart irrigation for gardens, and being mindful of daily usage like shorter showers and turning off taps when not in use.",
+            "what tips do you have for saving water":"Some tips for saving water at home include installing low-flow fixtures, collecting rainwater  for gardening, and using your dishwasher and washing machine only with full loads.",
+            "how can i check my water quality":"You can check the water quality by using the water quality monitoring feature on the dashboard. The systemprovides real-time data on various water quality parameters such as pH level, turbidity, and containment presence.",
+            "common water quality issues":"Common water quality issues include high levels of contaminants, such as lead or bacteria, and imbalances in pH. These can be resolved by using appropriate filtration systems, regular testing, and contacting your local water authority if necessary.",
+            "leak detection":"The system uses sensors and AI algorithms to detect unusual water flow patterns that indicate a possible leak. If a leak is detected, the system will notify you immediately, allowing you to take quick action.",
+            "what should i do if i suspect a leak":"If you suspect a leak, you should first check the system notifications. If a leak is confirmed, shut off the main water supply and contact a plumber to assess and repair the issue.",
+            "water management system failures":"The system offers features such as real-time water usage tracking, leak detection, water quality monitoring, predictive analysis for water demand, and AI-driven recommendations for water conservation.",
+            "how can i set up motifications for water usage limit":"You can set up notifications by accessing the settings on your dashboard. Here, you can customize your water usage limits and receive alerts when you approach or exceed these limits",
+            "AI Sustainability":"AI improves water management sustainability by optimizing water distribution, detecting leaks early, predicting future water needs, and providing data-driven recommendations for reducing water waste.",
+            "can you explain how smart irrigation works":"Smart irrigation uses sensors and AI to monitor soil moisture, weather conditions, and plant needs to deliver the right amount of water at the right time, reducing water waste and promoting efficient water use.",
+            "predictive analysis":"Predictive analysis uses historical data, weather forecasts, and usage patterns to predict future water demand. This helps in planning and ensuring that water resources are used efficiently.",
+            "how can predictive analysis help me plan my water usage":"The system provides insights into your usage patterns and offers AI-driven recommendations on how to adjust your water use based on predicted demand and potential shortages, helping you plan more effectively.",
+            "how can i get help with the system":"For assistance, you can access the help section on the website or contact our support team directly through the contact form. We're here to help you with any issues you may encounter.",
+            "where can i provide feedback on the system":"You can provide feedback by clicking on the feedback link on the website. Your input is valuable to us and helps us improve the system to better meet your needs.",
+            "eh":"angazi mfo",
+            "default": "I'm not sure how to respond to that. Can you please rephrase your question?"
+        };
+
+        const searchHistory = [];
+
+        function sendMessage() {
+            const inputBox = document.getElementById('userInput');
+            const chatBox = document.getElementById('chatBox');
+            const searchHistoryList = document.getElementById('searchHistory');
+            const userMessage = inputBox.value.toLowerCase().trim();
+            
+            if (userMessage) {
+                // Add user message to chat
+                chatBox.innerHTML += `<div class="response">You: ${inputBox.value}</div>`;
+                
+                // Store the search word in history
+                searchHistory.push(userMessage);
+                
+                // Update the search history list
+                searchHistoryList.innerHTML = '';
+                searchHistory.forEach(word => {
+                    searchHistoryList.innerHTML += `<li>${word}</li>`;
+                });
+
+                // Get response from chatbot
+                const response = responses[userMessage] || responses["default"];
+                chatBox.innerHTML += `<div class="response">Emma: ${response}</div>`;
+                
+                // Clear input field and scroll to bottom
+                inputBox.value = '';
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+    </script>
+</body>
+</html>
