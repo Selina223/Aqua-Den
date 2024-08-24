@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Management System</title>
+    <link rel="stylesheet" href="style.css">
+    </head>
+<body>
+    <div class="banner">
+        <div class="navbar">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="leakdetectorpage.html">Water Leakage</a></li>
+                <li><a href="watermanagementsystem.html">Dashboard</a></li>
+                <li><a href="contact.html">Conatct us</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <h1>Learn More About the Water Conservation System</h1>
+            <p>Welcome to the future of Water Conservation. Our AI driven water conservation system is designed to address global water crisis in South Africa by optimizing water usage and reduce water waste.<p>
+                
+            <h2>How the system Works</h2> <br>
+            <p>As South African water resources face increasing pressure from population growth and climate change, our system provides a cutting-edge solution to ensure sustainable water usage.<br>Water is a vital resource that supports human life, economic development, and environmental sustainability. The system integrates state of the art technology to monitor and manage water usage efficiently.<br>Our AI system algorithm analyzes vast amounts of data related to water usage patterns, solutions to take to avoid wasting water. It provides with solutions on how to save and manage water resources.<br>The system also analyzes the algorithm data by allowing for immediate automated responses, such as shutting off valves or alerting maintenance teams to avoid water leakage.<br> This proactive approach ensures that leaks are addressed promptly, reducing water loss, and contributing to more efficient water management.<br><br>For more information about our AI- Driven Water Conservation System, please visit our “Contact Us page”. Together, we can create a more sustainable future for water resources.</p>
+    </div>
+</body>
+</html>
