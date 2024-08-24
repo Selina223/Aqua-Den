@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Map with Colored Markers</title>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <script type="module" src="./index.js"></script>
+    <script>
+        let map;
+
+        function initMap() {
+            const mapOptions = {
+                zoom: 8,
+                center: { lat: -26.3521930, lng: 28.3874968 },
+            };
+
+            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+            // Example data: { lat: latitude, lng: longitude, status: 'status' }
+            const locations = [
+                { lat: -26.3521930, lng: 28.3874968, status: 'high' },
+                { lat: -25.872782, lng: 29.255323, status: 'wise' },
+
+                { lat: -26.26786000, lng: 28.12225000, status: 'high' },
+                { lat: -26.18848000, lng: 28.32078000, status: 'wise' },
+                { lat: -26.21197000, lng: -26.21197000, status: 'save' },
+                { lat: -26.23656000, lng: 28.36938000, status: 'abundant' },
+                { lat: -25.81015000, lng: 28.74248000, status: 'high' },
+                { lat: -26.36094000, lng: 27.39767000, status: 'save' },
+                { lat: -25.85891000, lng: 28.18577000, status: 'save' },
+                { lat: -26.17673000, lng: 27.96353000, status: 'wise' },
+                { lat: -25.65985000, lng: 28.44343000, status: 'high' },
+                { lat: -25.67088000, lng: 28.52364000, status: 'wise' },
+                { lat: -25.93312000, lng: 28.01213000, status: 'high' },
+                { lat: -26.13230000, lng: 28.16859000, status: 'wise' },
+                { lat: -26.12593000, lng: 28.16500000, status: 'high' },
+                { lat: -26.14095000, lng: 28.15247000, status: 'wise' },
+                { lat: -25.69619000, lng: 28.74918000, status: 'high' },
+                { lat: -26.19890000, lng: 28.31262000, status: 'wise' },
+                { lat: -26.50476000, lng: 28.35921000, status: 'high' },
+                { lat: -26.20227000, lng: 28.04363000, status: 'high' },
+                { lat: -26.20227000, lng: 28.04363000, status: 'high' },
+                { lat: -26.08577000, lng: 27.77515000, status: 'high' },
+                { lat: -25.98953000, lng: 28.12843000, status: 'high' },
+                { lat: -25.91849000, lng: 28.19881000, status: 'high' },
+                { lat: -26.08909000, lng: 28.16534000, status: 'high' },
+                { lat: -26.03673000, lng: 27.83798000, status: 'high' },
+                { lat: -26.43138000, lng: 28.47713000, status: 'wise' },
+                { lat: -26.48333000, lng: 27.86667000, status: 'high' },
+                { lat: -25.74486000, lng: 28.18783000, status: 'wise' },
+                { lat: -26.09410000, lng: 28.00123000, status: 'high' },
+                { lat: -26.18440000, lng: 27.70203000, status: 'high' },
+                { lat: -26.43138000, lng: 28.47713000, status: 'high' },
+                { lat: -26.16250000, lng: 27.87250000, status: 'high' },
+                { lat: -26.56686000, lng: 28.18277000, status: 'high' },
+                { lat: -26.26781000	, lng: 27.85849000, status: 'high' },
+                { lat: -26.25000000, lng: 28.40000000, status: 'high' },
+                { lat: -25.99636000, lng: 28.22680000, status: 'high' },
+                { lat: -26.71171000, lng: 27.83795000, status: 'high' },
+                { lat: -26.67313000, lng: 27.92615000, status: 'high' },
+                { lat: -26.24565000, lng: 27.55538000, status: 'high' },
+                { lat: -26.31905000, lng: 27.64860000, status: 'high' },
+                // Add more locations as needed
+            ];
+
+            locations.forEach(location => {
+                const color = getColorByStatus(location.status);
+                const marker = new google.maps.Marker({
+                    position: { lat: location.lat, lng: location.lng },
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: color,
+                        fillOpacity: 0.8,
+                        scale: 6,
+                        strokeColor: 'white',
+                        strokeWeight: 2
+                    }
+                });
+
+                const infowindow = new google.maps.InfoWindow({
+                    content: `<p>Status: ${location.status}</p>`,
+                });
+
+                marker.addListener("click", () => {
+                    infowindow.open(map, marker);
+                });
+            });
+
+            // Add legend
+            const legend = document.createElement('div');
+            legend.id = 'legend';
+            legend.innerHTML = `
+                <div><span class="legend-color-box" style="background: red;"></span> High Water Usage</div>
+                <div><span class="legend-color-box" style="background: yellow;"></span> Wise Water Usage</div>
+                <div><span class="legend-color-box" style="background: green;"></span> Saves Water</div>
+                <div><span class="legend-color-box" style="background: blue;"></span> Abundant Water</div>
+            `;
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(legend);
+        }
+
+        function getColorByStatus(status) {
+            switch (status) {
+                case 'high': return 'red';
+                case 'wise': return 'yellow';
+                case 'save': return 'green';
+                case 'abundant': return 'blue';
+                default: return 'gray';
+            }
+        }
+
+        window.initMap = initMap;
+    </script>
+    <style>
+        #map {
+            height: 100%;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #legend {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .legend-color-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <!-- prettier-ignore -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly"
+      defer
+    ></script>
+</body>
+</html>
